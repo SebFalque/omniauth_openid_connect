@@ -301,8 +301,9 @@ module OmniAuth
       def decode_id_token(id_token)
         puts "decode_id_token(#{id_token})"
         decoded = JSON::JWT.decode(id_token, :skip_verification)
-        puts "decoded = #{decoded.to_s}"
+        puts "decoded = #{decoded}"
         algorithm = decoded.algorithm.to_sym
+        puts "algorithm = #{algorithm}"
 
         validate_client_algorithm!(algorithm)
 
@@ -323,6 +324,8 @@ module OmniAuth
         # individually to see if one works:
         # https://github.com/nov/json-jwt/pull/92#issuecomment-824654949
         puts "before raise if decoded&.header&.key?('kid')"
+        puts decoded&.header&.key?('kid')
+        pp decoded&.header&
         raise if decoded&.header&.key?('kid')
         puts "after raise if decoded&.header&.key?('kid')"
 
