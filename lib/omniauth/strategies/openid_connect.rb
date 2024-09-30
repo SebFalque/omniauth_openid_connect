@@ -143,6 +143,7 @@ module OmniAuth
         return id_token_callback_phase if configured_response_type == 'id_token'
 
         client.authorization_code = authorization_code
+        puts "authorization_code = #{authorization_code}"
         access_token
         super
       rescue CallbackError => e
@@ -283,6 +284,7 @@ module OmniAuth
         token_request_params[:code_verifier] = params['code_verifier'] || session.delete('omniauth.pkce.verifier') if options.pkce
 
         @access_token = client.access_token!(token_request_params)
+        puts "@access_token.id_token = #{@access_token.id_token}"
         verify_id_token!(@access_token.id_token) if configured_response_type == 'code'
 
         @access_token
@@ -297,7 +299,9 @@ module OmniAuth
       # limitation in the openid_connect gem:
       # https://github.com/nov/openid_connect/issues/61
       def decode_id_token(id_token)
+        puts "decode_id_token(#{id_token})"
         decoded = JSON::JWT.decode(id_token, :skip_verification)
+        puts "decoded = #{decoded.to_s}"
         algorithm = decoded.algorithm.to_sym
 
         validate_client_algorithm!(algorithm)
@@ -318,11 +322,15 @@ module OmniAuth
         # done. However, if there is no kid, then we try each key
         # individually to see if one works:
         # https://github.com/nov/json-jwt/pull/92#issuecomment-824654949
+        puts "before raise if decoded&.header&.key?('kid')"
         raise if decoded&.header&.key?('kid')
+        puts "after raise if decoded&.header&.key?('kid')"
 
         decoded = decode_with_each_key!(id_token, keyset)
 
+        puts "before raise unless decoded"
         raise unless decoded
+        puts "after raise unless decoded"
 
         decoded
       end
