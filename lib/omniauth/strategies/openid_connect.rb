@@ -315,6 +315,7 @@ module OmniAuth
             public_key
           end
 
+        puts "keyset = #{keyset}"
         decoded.verify!(keyset)
         ::OpenIDConnect::ResponseObject::IdToken.new(decoded)
       rescue JSON::JWK::Set::KidNotFound
