@@ -317,6 +317,7 @@ module OmniAuth
 
         puts "keyset = #{keyset}"
         decoded.verify!(keyset)
+        puts "decoded = #{decoded}"
         ::OpenIDConnect::ResponseObject::IdToken.new(decoded)
       rescue JSON::JWK::Set::KidNotFound
         # If the JWT has a key ID (kid), then we know that the set of
